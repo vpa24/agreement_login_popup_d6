@@ -1,0 +1,53 @@
+<?php
+function agreement_login_user($op, &$edit, &$account, $category = NULL)
+{
+    drupal_add_js(drupal_get_path('module', 'agreement_login') . '/js/popup.js', 'module');
+    global $base_url;
+    drupal_add_js(array('baseUrl' => $base_url), 'setting');
+    if ($op == 'login') {
+        global $user;
+        if (isset($_GET['destination'])) {
+            unset($_GET['destination']);
+            unset($_REQUEST['destination']);
+        }
+        $expried_date = db_fetch_object(db_query("SELECT * FROM {agreement_login} WHERE uid = $user->uid"))->expired_date;
+
+        if ($expried_date === false || time() > $expried_date) {
+            if ($_COOKIE['isPopup'] == 1) {
+                setcookie('isPopup', 0, time() + (86400 * 30), "/");
+            }
+            drupal_goto('/node/4'); //In this Agreement page add model content bootstrap
+        } else {
+            setcookie('isPopup', 1, time() + (86400 * 30), "/");
+            drupal_goto('/node/1'); //welcome page.
+        }
+    }
+}
+
+function agreement_login_menu()
+{
+
+    $items = array();
+    // Create a path to send our AJAX request to.
+    $items['mymodule_ajax'] = array(
+        'page callback' => 'mymodule_ajax_callback',
+        'access arguments' => array('access example ajax'),
+        'type' => MENU_CALLBACK,
+        'access callback' => TRUE
+    );
+
+    return $items;
+}
+
+function mymodule_ajax_callback()
+{
+    global $user;
+    $nextYear =  strtotime("next year");
+    $r = db_query("SELECT * FROM {agreement_login} WHERE uid = $user->uid");
+    if ($r->num_rows == 0) { //first login
+        db_query("INSERT INTO {agreement_login} (uid, expired_date)  VALUES (%d, '%d')", $user->uid, $nextYear);
+    } else { // after one year update to next year
+        db_query("UPDATE {agreement_login} SET expired_date= $nextYear WHERE uid= $user->uid");
+    }
+    setcookie('isPopup', 1, time() + (86400 * 30), "/");
+}

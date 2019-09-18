@@ -1,0 +1,6 @@
+name =  Agreement login 
+description = "First login will display the agreement page. After user click agree, this page doesn't display any more. It will expired for one year.  "
+package = "custom"
+version = VERSION
+core = 6.x
+dependencies[] = webform
