@@ -20,6 +20,18 @@ function agreement_login_schema()
                 'not null' => TRUE,
                 'default' => 0
             ),
+            'name' => array(
+                'type' => 'varchar',
+                'length' => 100,
+                'not null' => FALSE,
+                'default' => ''
+            ),
+            'mail' => array(
+                'type' => 'varchar',
+                'length' => 255,
+                'not null' => FALSE,
+                'default' => ''
+            ),
             'expired_date' => array(
                 'type' => 'int',
                 'length' => 20,

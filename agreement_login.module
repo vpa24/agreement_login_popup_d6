@@ -1,4 +1,5 @@
 <?php
+
 function agreement_login_user($op, &$edit, &$account, $category = NULL)
 {
     global $base_url;
@@ -38,6 +39,7 @@ function check_agreement()
 }
 function agreement_login_menu()
 {
+
     $items = array();
     // Create a path to send our AJAX request to.
     $items['mymodule_ajax'] = array(
@@ -56,9 +58,8 @@ function mymodule_ajax_callback()
     $nextYear =  strtotime("next year");
     $r = db_query("SELECT * FROM {agreement_login} WHERE uid = $user->uid");
     if ($r->num_rows == 0) { //first login
-        db_query("INSERT INTO {agreement_login} (uid, expired_date)  VALUES (%d, '%d')", $user->uid, $nextYear);
+        db_query("INSERT INTO {agreement_login} (uid, name, mail, expired_date)  VALUES ($user->uid, '$user->name', '$user->mail', $nextYear)");
     } else { // after one year update to next year
         db_query("UPDATE {agreement_login} SET expired_date= $nextYear WHERE uid= $user->uid");
     }
-    setcookie('isPopup', 1, time() + (86400 * 30), "/");
 }

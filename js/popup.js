@@ -1,12 +1,13 @@
 $(document).ready(function() {
   var baseUrl = Drupal.settings.baseUrl;
   var isPopup = Drupal.settings.isPopup;
-  if (isPopup) {
-    var logoutbtn = `${baseUrl}/logout`;
 
+  if (isPopup) {
     $("#myModal").modal({
       backdrop: false
     });
+    var logoutbtn = `${baseUrl}/logout`;
+
     $("#btnAgree").click(function() {
       $.ajax({
         type: "POST",
@@ -18,7 +19,7 @@ $(document).ready(function() {
       });
     });
     $("#btnDisagree").click(function() {
-      $(location).attr(logoutbtn);
+      window.location.href = logoutbtn;
     });
   }
 });
