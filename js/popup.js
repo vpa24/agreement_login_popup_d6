@@ -1,8 +1,7 @@
 $(document).ready(function() {
   var baseUrl = Drupal.settings.baseUrl;
   var isPopup = Drupal.settings.isPopup;
-  if ($.isArray(isPopup) === false) {
-    if (isPopup) {
+  if (isPopup === true) {
       $("#myModal").modal({
         backdrop: false
       });
@@ -22,5 +21,4 @@ $(document).ready(function() {
         window.location.href = logoutbtn;
       });
     }
-  }
 });
