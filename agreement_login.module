@@ -2,9 +2,8 @@
 
 function agreement_login_user($op, &$edit, &$account, $category = NULL)
 {
-    global $base_url;
     $isPopup = check_agreement();
-    add_js_setting($base_url, $isPopup);
+    add_js_setting($isPopup);
     if ($op == 'login') {
         redirect_login($isPopup);
     }
@@ -19,8 +18,9 @@ function check_agreement()
     return false;
 }
 
-function add_js_setting($base_url, $isPopup)
+function add_js_setting($isPopup)
 {
+    global $base_url;
     drupal_add_js(drupal_get_path('module', 'agreement_login') . '/js/popup.js');
     drupal_add_js(
         array(
