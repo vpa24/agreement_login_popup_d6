@@ -4,6 +4,23 @@ function agreement_login_user($op, &$edit, &$account, $category = NULL)
 {
     global $base_url;
     $isPopup = check_agreement();
+    add_js_setting($base_url, $isPopup);
+    if ($op == 'login') {
+        redirect_login($isPopup);
+    }
+}
+
+function check_agreement()
+{
+    global $user;
+    $expried_date = db_fetch_object(db_query("SELECT * FROM {agreement_login} WHERE uid = $user->uid"))->expired_date;
+    if ($expried_date === fase || time() > $expried_date)
+        return true;
+    return false;
+}
+
+function add_js_setting($base_url, $isPopup)
+{
     drupal_add_js(drupal_get_path('module', 'agreement_login') . '/js/popup.js');
     drupal_add_js(
         array(
@@ -17,29 +34,27 @@ function agreement_login_user($op, &$edit, &$account, $category = NULL)
         ),
         'setting'
     );
-    if ($op == 'login') {
-        if (isset($_GET['destination'])) {
-            unset($_GET['destination']);
-            unset($_REQUEST['destination']);
-        }
+}
 
-        if ($isPopup) {
-            drupal_goto('/node/4');
-        }
-        drupal_goto('/node/1'); //welcome page.
+function redirect_login($isPopup)
+{
+    unset_destination();
+    if ($isPopup) {
+        drupal_goto('/node/4');
+    }
+    drupal_goto('/node/1'); //welcome page
+}
+
+function unset_destination()
+{
+    if (isset($_GET['destination'])) {
+        unset($_GET['destination']);
+        unset($_REQUEST['destination']);
     }
 }
-function check_agreement()
-{
-    global $user;
-    $expried_date = db_fetch_object(db_query("SELECT * FROM {agreement_login} WHERE uid = $user->uid"))->expired_date;
-    if ($expried_date === fase || time() > $expried_date)
-        return true;
-    return false;
-}
+
 function agreement_login_menu()
 {
-
     $items = array();
     // Create a path to send our AJAX request to.
     $items['mymodule_ajax'] = array(
